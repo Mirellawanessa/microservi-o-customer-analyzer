@@ -1,0 +1,205 @@
+{
+  "name": "Análise de Churn e Feedback",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "/cliente-evento",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "1ceb8267-a0cf-48a7-a4a2-eae9da7c59fb",
+      "name": "Webhook",
+      "webhookId": "1f99ec89-51a7-499d-8f02-8d1ceec26d04"
+    },
+    {
+      "parameters": {
+        "sendTo": "mirellawanessamorais@gmail.com",
+        "subject": "Cliente em risco de churn detectado!",
+        "message": "=Olá time,\n\nDetectamos um cliente com possível risco.\n\n<ul>\n  <li><strong>Uso mensal:</strong> {{$json[\"uso_mensal\"]}}</li>\n  <li><strong>Ticket aberto:</strong> {{$json[\"ticket_suporte_aberto\"]}}</li>\n  <li><strong>Feedback:</strong> \"{{$json[\"comentario\"]}}\"</li>\n</ul>\n\nEntre em contato com o cliente o quanto antes!",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "3825c7d5-9bd5-4409-86e7-f94766d5e92f",
+      "name": "Gmail",
+      "webhookId": "973a3af9-a968-4050-89d1-1cae3b698953",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "KqZLslfaE17P9HZM",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1-dZxsdWRN_FbGMOK6gRFhZBDgRW9MxLj-RTBXtdfLpI",
+          "mode": "list",
+          "cachedResultName": "Clientes_em_Risco",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-dZxsdWRN_FbGMOK6gRFhZBDgRW9MxLj-RTBXtdfLpI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Dados",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-dZxsdWRN_FbGMOK6gRFhZBDgRW9MxLj-RTBXtdfLpI/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Nome": "Desconhecido",
+            "Uso Mensal": "{{$json[\"uso_mensal\"]}}",
+            "Ticket Aberto": "{{$json[\"ticket_suporte_aberto\"]}}",
+            "Comentário": "{{$json[\"comentario\"]}}",
+            "Risco Churn": "{{$node[\"HTTP Request\"].json[\"risco_churn\"]}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Nome",
+              "displayName": "Nome",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Uso Mensal",
+              "displayName": "Uso Mensal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Ticket Aberto",
+              "displayName": "Ticket Aberto",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Comentário",
+              "displayName": "Comentário",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Risco Churn",
+              "displayName": "Risco Churn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "\nSentimento",
+              "displayName": "\nSentimento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        440,
+        0
+      ],
+      "id": "370cfce5-ceeb-4855-8f9d-7a27f91ada98",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "iPD3tYCOSQxA7cSq",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        660,
+        0
+      ],
+      "id": "0c2539c7-69a8-40b6-a716-4bfe2fb2ea90",
+      "name": "No Operation, do nothing"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b26adc49-7594-4fe3-80ac-580bd29ad103",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0c40519d42b46f2afb192b3646180a6e7001b9ce4795398ad93732afdf2debef"
+  },
+  "id": "y43MrKogwn6EvZy0",
+  "tags": []
+}
