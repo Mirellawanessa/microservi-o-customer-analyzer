@@ -85,6 +85,8 @@ Fluxo completo criado no n8n que orquestra os serviços de análise de churn e s
 Dashboard no Looker Studio mostrando todos os clientes em risco, sentimentos e comentários registrados:
 
 🔗 [Acessar Dashboard](https://lookerstudio.google.com/reporting/69c595a5-394d-4294-ab5b-e516293f5c7e)
+
+
 🔗 [Acessar Planilha] (https://docs.google.com/spreadsheets/d/1-dZxsdWRN_FbGMOK6gRFhZBDgRW9MxLj-RTBXtdfLpI/edit?usp=sharing)
 
 ---
